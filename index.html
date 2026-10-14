@@ -1,0 +1,130 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>내 마음대로 인생 살기</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#000;font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;color:#4a3b3b}
+#sp{position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:9;opacity:0;transition:opacity 1.6s}
+#sp img{max-width:100%;max-height:100%}
+#app{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px;text-align:center}
+.cute{background:linear-gradient(#ffe6f0,#e6f4ff 60%,#fff6d6);overflow:hidden}.plain{background:#f4f1ec}
+.deco{font-size:28px;letter-spacing:14px;animation:fl 4s ease-in-out infinite}
+h1{font-size:34px;margin:10px 0;color:#ff7aa8;text-shadow:2px 2px #fff}.baby{font-size:110px;animation:bn 1.6s infinite}
+@keyframes bn{50%{transform:translateY(-14px) rotate(4deg)}}@keyframes fl{50%{transform:translateY(8px)}}
+.box,.card{background:#fff;border-radius:20px;padding:18px;width:100%;max-width:420px;box-shadow:0 6px 18px #0002}
+input,button{width:100%;padding:12px;margin:5px 0;border-radius:12px;border:2px solid #ddd;font:inherit}
+button{background:#ff8fb3;color:#fff;border:0;font-weight:bold;cursor:pointer}button.g{background:#7ec8e3}button.s{background:#bbb}button:disabled{opacity:.4}
+.row{display:flex;gap:8px}.row button{flex:1}.hd{font-weight:bold;font-size:17px}.st{margin:6px 0;font-size:14px}
+.lg{background:#fff;border-radius:14px;padding:14px;margin:10px 0;width:100%;max-width:480px;text-align:left;line-height:1.7;min-height:90px}
+.bt{width:100%;max-width:480px;display:grid;grid-template-columns:1fr 1fr;gap:6px}.bt button{margin:0}
+.li{display:flex;align-items:center;gap:8px;background:#fff;border-radius:12px;padding:10px;margin:5px 0;cursor:pointer;text-align:left}
+.bar{height:6px;background:#eee;border-radius:3px;flex:1}.bar i{display:block;height:100%;background:#ff8fb3;border-radius:3px}
+.bub{padding:8px 12px;border-radius:14px;margin:4px 0;max-width:80%;display:inline-block}.me{background:#ffd1e0;float:right;clear:both}.ot{background:#e8e8e8;float:left;clear:both}
+.ph{background:#222;color:#fff;border-radius:26px;padding:16px;width:100%;max-width:420px}.ph .box{color:#4a3b3b;box-shadow:none;margin:6px 0;text-align:left}
+.apps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.apps button{background:#444;font-size:15px;padding:16px 4px}
+.story{background:#000;color:#fff;cursor:pointer}.story p{font-size:19px;line-height:1.8;max-width:480px}
+.eye{position:fixed;inset:0;background:radial-gradient(circle,transparent 0,#000 0);animation:op 5s forwards;pointer-events:none}
+@keyframes op{0%{background:#000}30%{background:radial-gradient(ellipse 8% 2%,#fff,#000 20%)}100%{background:radial-gradient(ellipse 150% 150%,transparent 100%,transparent)}}
+.up{color:#e33}.dn{color:#27c}
+</style></head><body><div id="sp"><img src="logo.png" alt="LIMEN"></div><div id="app"></div>
+<script>
+const $=s=>document.querySelector(s),A=$('#app'),R=n=>Math.floor(Math.random()*n),P=a=>a[R(a.length)],W=n=>Math.round(n).toLocaleString()+'원',
+E=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])),c=v=>Math.max(0,Math.min(100,Math.round(v)));
+let U=JSON.parse(localStorage.lifeUsers||'{}'),ME,G,NAME='',GEN='';
+const scr=(k,h)=>{A.className=k;A.innerHTML=h;scrollTo(0,0)},adj=o=>{for(let k in o)G[k]=c(G[k]+o[k])};
+// ---- 스플래시
+const sp=$('#sp');setTimeout(()=>sp.style.opacity=1,100);setTimeout(()=>sp.style.opacity=0,3200);setTimeout(()=>{sp.remove();title()},5000);
+// ---- 로그인/회원가입
+function title(){scr('cute',`<div class=deco>☁️ ⭐ 🌈 🎈 🧸</div><h1>내 마음대로<br>인생 살기</h1><div class=baby>👶</div><div class=box><input id=i placeholder=아이디><input id=p type=password placeholder=비밀번호><button onclick=login()>로그인</button><button class=g onclick=signup()>회원가입</button></div>`)}
+function signup(){scr('cute',`<h1>회원가입</h1><div class=box><input id=i placeholder=아이디><input id=p type=password placeholder=비밀번호><input id=p2 type=password placeholder="비밀번호 확인"><input id=n placeholder=이름><input id=b type=date><button onclick=reg()>가입하기</button><button class=s onclick=title()>뒤로</button></div>`)}
+function reg(){const v=k=>$('#'+k).value.trim();if(!v('i')||!v('p')||!v('n')||!v('b'))return alert('모든 칸을 입력해 주세요.');if(v('p')!=v('p2'))return alert('비밀번호가 서로 달라요.');if(U[v('i')])return alert('이미 있는 아이디예요.');
+U[v('i')]={p:v('p'),n:v('n'),b:v('b')};localStorage.lifeUsers=JSON.stringify(U);alert('가입 완료! 로그인해 주세요.');title()}
+function login(){const u=U[$('#i').value.trim()];if(!u||u.p!=$('#p').value)return alert('아이디 또는 비밀번호가 틀렸어요.');ME=$('#i').value.trim();nameScr()}
+function nameScr(){scr('plain',`<div class=card><h2>당신의 이야기를 시작해요</h2><input id=n placeholder="이름" value="${E(U[ME].n)}"><p>성별을 선택하세요</p><div class=row><button onclick="gen('남')">👦 남자</button><button class=g onclick="gen('여')">👧 여자</button></div></div>`)}
+function gen(g){NAME=$('#n').value.trim()||U[ME].n;GEN=g;scr('plain',`<h2>어떤 집에서 태어날까요?</h2><div class=card><button onclick=begin(0)>🏰 대기업을 운영하는 부잣집</button><button class=g onclick=begin(1)>🏠 생계를 유지하는 평범한 집안</button><button class=s onclick=begin(2)>🏚️ 가난한 집안</button></div>`)}
+// ---- 데이터
+const SN=['김','이','박','최','정','강','조','윤','장','임'],N1=['민준','서준','도윤','하준','지호','현우','준서','우진','시우','태양'],N2=['서연','지우','하윤','서윤','수아','지아','다은','예린','채원','유나'];
+const S=[['삼성전자',70000,.03],['SK하이닉스',180000,.05],['현대차',240000,.04],['카카오',45000,.06],['NAVER',200000,.05],['셀트리온',170000,.06],['포스코',380000,.05],['LG에너지',400000,.06],['하이브',210000,.07],['바이오신약',9000,.12],['크래프톤',250000,.06],['코인랜드(동전주)',800,.2]];
+const AL=[['고깃집 서빙',10500,16],['식당 홀서빙',10300,16],['물류 보조',10000,16],['편의점',10300,19],['카페',10500,19],['PC방',10200,19],['노래방',11000,19],['술집',11500,19],['클럽 웨이터',13000,19],['유흥주점',14000,19]];
+const CJ=[['공장·현장 근로자',30e6,0],['영업·서비스직',34e6,0],['사무직 회사원',42e6,50],['개발자',60e6,65],['전문직(의사/변호사)',110e6,85],['가업 승계(대기업 후계자)',250e6,0,1]];
+const CG=['가정주부 아주머니가 나를 안아 보살펴 준다.','어린이집에 다니다 저녁이면 부모님이 데리러 오신다.','부모님이 일하러 나가셔서 혼자 있는 시간이 많지만 사랑은 느껴진다.'],
+LG=['영어유치원에 전용 차로 등원한다. 집엔 교구가 가득하다.','동네 유치원에서 친구들과 신나게 논다.','집 근처에서 동네 아이들과 어울려 논다.'],
+MS=['태어난 첫 해. 먹고 자고 울기의 반복!','뒤집기 성공! 걸음마도 시작했다.','첫 말 "엄마"! 모두가 환호했다.','말문이 터져 쉴 새 없이 재잘댄다.','ㄱㄴㄷ을 배우며 한글에 익숙해진다.','이제 한글을 제법 읽는다. 동화책이 재밌다!','내년이면 초등학생! 새 책가방이 설렌다.'],
+STUDY=['과외를 몇 개씩 받으며 공부했다.','학원 한두 개를 다니며 공부했다.','학교에서 받은 교과서로 집에서 혼자 공부했다.'],
+RP=['ㅋㅋㅋ 그래!','오 진짜?','나도 그렇게 생각해','지금 뭐해?','ㅎㅎ 알겠어','다음에 같이 놀자!'],LP=['보고 싶다...💕','오늘도 네 생각했어','사랑해 ❤️'],
+IT=['오늘 날씨 최고 ☀️','맛집 발견! 🍜','시험 망했다 ㅠㅠ','주말엔 역시 휴식','새 운동화 득템 👟','벚꽃 구경 🌸','야근 지옥...','강아지 너무 귀여워 🐶'];
+const nm=g=>P(SN)+P(g=='남'?N1:N2);
+function mk(role,g){g=g||P(['남','여']);const t=/선생/.test(role),a=/직장|동기/.test(role),p={id:G.ppl.length,n:nm(g),g,role,rel:15+R(20),num:0,ac:'110-'+(100+R(900))+'-'+(100000+R(900000)),lv:0,fo:0,ak:0,face:t?(g=='남'?'👨‍🏫':'👩‍🏫'):a?(g=='남'?'👨':'👩'):(g=='남'?'👦':'👧')};G.ppl.push(p);return p}
+function begin(bg){G={n:NAME,g:GEN,bg,age:0,cash:0,sav:0,hp:80,iq:50,so:50,hy:60,lk:50,en:3,ppl:[],th:{},un:0,hold:{},px:S.map(s=>s[1]),pv:S.map(s=>s[1]),job:0,sal:0,univ:0,spouse:0,kids:0,fl:5,posts:[],feed:[],fa:-1,ac:'333-'+(1000+R(9000))+'-'+(100000+R(900000))};
+[['엄마','여','👩'],['아빠','남','👨']].forEach(x=>{const p=mk('부모님',x[1]);p.n=x[0];p.face=x[2];p.rel=80});
+const B=['대저택의 따뜻한 침실이다. 아버지는 대기업을 운영하신다.','아담하지만 포근한 우리 집이다. 부모님은 성실히 생계를 꾸려 가신다.','좁고 낡았지만 따뜻한 방이다. 부모님은 힘겹게 살림을 꾸려 가신다.'];
+story(['…………','어둠 속에서 아주 작은 소리가 들린다. "응애—"','점점 눈이 떠진다. 갑자기, 눈부신 빛이 쏟아진다...','부모님이 나를 바라보고 있다. "우리 아기, 드디어 만났구나."',B[bg],`${NAME}의 인생이 시작되었다.`],()=>main(narr(0)),1)}
+function story(L,cb,eye){let i=0;const sh=()=>scr('story',`${eye&&i==2?'<div class=eye></div>':''}<p>${L[i]}</p><small>(클릭)</small>`);A.onclick=()=>{if(++i>=L.length){A.onclick=null;cb()}else sh()};sh()}
+const narr=a=>`<b>[${a}세]</b> ${MS[a]}<br>${a<3?CG[G.bg]:LG[G.bg]}`;
+const stage=()=>{const a=G.age;return a<7?'영유아':a<13?'초등학생':a<16?'중학생':a<19?'고등학생':a<23?(G.univ?'대학생':'사회초년생'):a<65?'성인':'노년'};
+// ---- 메인
+function main(log){const g=G,bt=g.age<7?'<button style="grid-column:1/3" onclick=ny()>다음 ▶</button>':`<button onclick="act('iq')">📚 공부</button><button onclick="act('hp')">💪 운동</button><button onclick="act('hy')">🛋️ 휴식</button><button onclick=peo()>👥 사람들</button>${g.age>=13?'<button class=g onclick=phone()>📱 핸드폰'+(g.un?' 🔴'+g.un:'')+'</button>':''}<button class=s onclick=ny()>다음 해 ▶</button>`;
+scr('plain',`<div class=hd>${E(g.n)} · ${g.age}세 · ${stage()}</div><div>💰${W(g.cash)} ${g.sav?'· 🏦'+W(g.sav):''}</div><div class=st>❤️${g.hp} 📚${g.iq} 🤝${g.so} 😊${g.hy} ✨${g.lk} ${g.age>=7?'· 행동력 '+g.en+'/3':''}</div><div class=lg>${log||''}</div><div class=bt>${bt}</div>`)}
+function use(n){if(G.en<n){alert('이번 해 행동력이 부족해요. 다음 해로 넘어가세요.');return 0}G.en-=n;return 1}
+function act(k){if(!use(1))return main('행동력 부족!');let t;if(k=='iq'){adj({iq:[7,5,3][G.bg],hy:-3});t='📚 '+STUDY[G.bg]}else if(k=='hp'){adj({hp:6,lk:2});t='💪 열심히 운동했다.'}else{adj({hy:10,hp:3});t='🛋️ 푹 쉬었다.'}main(t)}
+const ev=[[5,60,()=>{adj({hp:-12});return '🤕 넘어져서 다쳤다.'}],[3,60,()=>{adj({hp:-8});return '🤧 독감에 걸렸다.'}],[7,18,()=>{G.cash+=100000;return '🎁 친척에게 용돈 10만원을 받았다.'}],[7,18,()=>{adj({hy:-8,so:-3});return '😠 친구와 다퉜다.'}],[7,18,()=>G.iq>40?(adj({iq:3,hy:8}),'🏆 상을 받았다!'):'📝 시험이 어려웠다.'],[0,99,()=>{G.cash+=50000;return '💵 길에서 5만원을 주웠다!'}],
+[13,60,()=>{G.fl+=50;return '🔥 내 인스타 게시물이 갑자기 화제가 됐다!'}],[19,99,()=>{G.cash+=1500000;return '🎰 복권 3등 당첨! 150만원!'}],[20,99,()=>{adj({hy:-12,hp:-5});return '😵 번아웃이 왔다.'}],[19,99,()=>{const l=Math.round(G.cash*.1);G.cash-=l;return '🕵️ 투자 사기를 당해 '+W(l)+'을 잃었다.'}],
+[7,99,()=>{const p=mk(P(['동네 사람','새 친구']));return `🙋 새로운 사람 ${p.n}(${p.role})을 알게 됐다.`}],[0,18,()=>{if(G.bg==2)return '🌧️ 비 오는 날, 부모님과 부침개를 나눠 먹었다.';adj({hy:10});return '🚗 가족 여행을 다녀왔다!'}],[25,99,()=>{G.cash-=3e6;return '💐 경조사 비용으로 300만원을 썼다.'}],[45,99,()=>{adj({hp:-10});return '🏥 건강검진에서 이상 소견이 나왔다.'}],[20,99,()=>{adj({hy:6});const p=mk('옛 친구');return '🥂 동창회에서 '+p.n+'와 재회했다.'}]];
+function ny(){const g=G,L=[];g.age++;const a=g.age,b=g.bg;g.en=g.job?2:3;
+if(a<7){adj({iq:4,hy:2});L.push(narr(a))}
+else{let inc=0,ex=0;if(a<19||(b<2&&a<23))inc+=[12e6,3e6,6e5][b]*(a<19?1:.5);if(g.job)inc+=g.job[1]*600;if(g.sal){inc+=g.sal;g.sal*=1.03;if(a==65){g.sal*=.4;L.push('🎉 정년 퇴직! 연금으로 생활한다.')}}
+if(a>=20&&(b==2||a>=24))ex+=12e6;if(g.spouse)ex+=8e6;ex+=5e6*g.kids;if(g.univ&&a>=19&&a<23&&g.iq<75)ex+=[0,4e6,8e6][b];
+g.sav*=1.04;g.cash+=inc-ex;L.push(`📅 한 해 수입 ${W(inc)} / 지출 ${W(ex)}`);if(g.cash<0){adj({hy:-10});L.push('💸 계좌가 마이너스예요...')}
+for(let i=0;i<12;i++)tick(1);g.fl+=R(6);if(a<19&&!g.job)adj({hp:-1});else adj({hp:a>40?-2:-1});
+g.ppl.forEach(p=>{if(!p.lv)p.rel=Math.max(0,p.rel-3);else if(p.rel<30){p.lv=0;L.push('💔 '+p.n+'와(과) 헤어졌다.')}});
+const cs=g.ppl.filter(p=>p.num&&p.role!='부모님');for(let i=0;i<2&&cs.length;i++){const p=P(cs);(g.th[p.id]=g.th[p.id]||[]).push({m:0,t:p.lv?P(LP):P(RP)});g.un++}
+if(a==7){L.push('🏫 초등학교 입학! 반 친구들을 만났다.');mk('담임선생님','여');mk('초등 친구','남');mk('초등 친구','남');mk('초등 친구','여');mk('초등 친구','여')}
+if(a==13){L.push('📱 중학교 입학! 부모님이 핸드폰을 사주셨다.');mk('담임선생님');for(let i=0;i<3;i++)mk('중학교 친구');g.ppl[0].num=g.ppl[1].num=1}
+if(a==16){L.push('🎒 고등학교 입학! 이제 꿀알바 앱에서 알바를 구할 수 있다.');mk('담임선생님');for(let i=0;i<3;i++)mk('고등 친구')}
+if(a>=7&&a!=19&&a!=23&&R(10)<7){const e=ev.filter(x=>a>=x[0]&&a<=x[1]);L.push(P(e)[2]())}
+['hp','iq','so','hy','lk'].forEach(k=>g[k]=c(g[k]));
+if(a==19)return path(L.join('<br>'));if(a==23&&g.univ)return career(L.join('<br>'))}
+if(a>=58){const p=(a-58)**2/1600+(g.hp<30?.08:0);if(g.hp<=0||Math.random()<p||a>=100)return fin()}
+main(L.join('<br>'))}
+function path(L){scr('plain',`<div class=lg>${L}<br><br>🎓 <b>고등학교를 졸업했다.</b> 이제 어떤 길을 걸을까?</div><div class=card><button onclick=univ()>🏫 대학교 진학</button><button class=g onclick="career('')">💼 바로 취업</button></div>`)}
+function univ(){G.univ=1;mk('대학 동기');mk('대학 동기');mk('대학 동기');main('🏫 대학에 입학했다! 새로운 사람들이 가득하다.')}
+function career(L){const g=G;scr('plain',`<div class=lg>${L||''}<br>💼 <b>직업을 선택하세요</b></div><div class=card>${CJ.map((j,i)=>(j[3]&&g.bg)||g.iq<j[2]?'':`<button onclick=job(${i})>${j[0]} (연봉 ${W(j[1])})</button>`).join('')}<button class=s onclick=job(-1)>무직으로 지내기</button></div>`)}
+function job(i){if(i>=0){G.sal=CJ[i][1];G.job=0;mk('직장 동료');mk('직장 동료');main(`💼 ${CJ[i][0]}로 첫 출근했다!`)}else main('🏖️ 당분간 쉬기로 했다.')}
+function tick(n){for(let i=0;i<S.length;i++){G.pv[i]=G.px[i];G.px[i]=Math.max(100,Math.round(G.px[i]*(1+(Math.random()-.48)*S[i][2]*2)))}}
+// ---- 사람들 / 연애
+function peo(){scr('plain',`<h3>👥 사람들 (행동력 ${G.en})</h3><div style="width:100%;max-width:480px">${G.ppl.map(p=>`<div class=li onclick=pp(${p.id})><span style="font-size:28px">${p.face}</span><div style="width:110px"><b>${E(p.n)}</b>${p.lv?' ❤️':''}<br><small>${p.role}</small></div><div class=bar><i style="width:${p.rel}%"></i></div></div>`).join('')}</div><button class=s style="max-width:480px" onclick=main()>돌아가기</button>`)}
+function pp(i,m){const p=G.ppl[i],kid=G.age>=7&&!/선생|부모/.test(p.role);scr('plain',`<div class=card><div style="font-size:60px">${p.face}</div><h3>${E(p.n)} <small>${p.role}</small></h3><p>친밀도 ${p.rel} ${p.lv?'· 연인 ❤️':''}${p.num?' · 📞 번호 있음':''}</p><p>${m||'무엇을 할까?'}</p>
+<button onclick="pa(${i},'t')">💬 말 걸기 (1)</button><button onclick="pa(${i},'p')">🎮 같이 놀기 (1)</button>${G.age>=13&&!p.num?`<button class=g onclick="pa(${i},'n')">📇 번호 교환</button>`:''}
+${kid&&!p.lv&&p.rel>=50?`<button onclick="pa(${i},'c')">💌 고백하기</button>`:''}${p.lv?`<button onclick="pa(${i},'d')">🌹 데이트 (1)</button>${G.age>=25&&p.rel>=80&&!G.spouse?`<button onclick="pa(${i},'m')">💍 청혼하기</button>`:''}<button class=s onclick="pa(${i},'b')">💔 헤어지기</button>`:''}<button class=s onclick=peo()>뒤로</button></div>`)}
+function pa(i,k){const p=G.ppl[i];let t;if('tpd'.includes(k)&&!use(1))return pp(i,'행동력이 부족해요!');
+if(k=='t'){p.rel+=6;adj({so:2});t=P(['"요즘 어때?" 즐거운 대화를 나눴다.','서로의 고민을 이야기했다.','웃으며 수다를 떨었다.'])}
+if(k=='p'){p.rel+=10;adj({hy:5,so:2});t='함께 놀며 즐거운 시간을 보냈다!'}
+if(k=='n'){if(Math.random()<p.rel/100+.35){p.num=1;t='📇 번호를 교환했다!'}else t='"음... 다음에 줄게." 거절당했다.'}
+if(k=='c'){if(Math.random()<p.rel/100){p.lv=1;p.rel+=15;adj({hy:15});t='💖 "나도 좋아해!" 연애가 시작됐다!'}else{adj({hy:-10});p.rel-=15;t='😢 "미안, 친구로만 보여..." 고백이 거절당했다.'}}
+if(k=='d'){p.rel+=8;adj({hy:8});if(G.age>=16)G.cash-=50000;t='🌹 달콤한 데이트를 했다.'}
+if(k=='b'){p.lv=0;p.rel=20;adj({hy:-8});t='💔 헤어졌다.'}
+if(k=='m'){if(Math.random()<.85){G.spouse=p.id+1;G.kids=R(3);adj({hy:15});t=`💒 결혼했다! 가족이 생겼다. (자녀 ${G.kids}명)`}else t='"조금만 더 시간을 줘..." 청혼이 보류됐다.'}
+p.rel=Math.min(100,p.rel);pp(i,t)}
+// ---- 폰
+function phone(){const un=G.un;scr('plain',`<div class=ph><h3>📱 ${new Date().getFullYear()+G.age}</h3><div class=apps><button onclick=call()>📞 전화</button><button onclick=msg()>💬 메시지 ${un?'🔴'+un:''}</button><button onclick=insta()>📷 인스타</button><button onclick=alba()>🍯 꿀알바</button><button onclick=stock()>📈 주식</button><button onclick=bank()>🏦 은행</button></div><button class=s onclick=main()>🏠 홈으로</button></div>`)}
+const back=`<button class=s onclick=phone()>◀ 뒤로</button>`,ctc=()=>G.ppl.filter(p=>p.num);
+function call(m){scr('plain',`<div class=ph><h3>📞 전화</h3>${m?`<div class=box>${m}</div>`:''}${ctc().map(p=>`<div class=box onclick="cl(${p.id})">${p.face} ${E(p.n)} <small>${p.role}</small></div>`).join('')||'<p>연락처가 없어요. 사람들 메뉴에서 번호를 교환해 보세요.</p>'}${back}</div>`)}
+function cl(i,m){const p=G.ppl[i];scr('plain',`<div class=ph><h3>📞 ${E(p.n)}와 통화 중</h3><div class=box>${m||'"여보세요?"'}${p.ak?`<br><small>계좌: ${p.ac}</small>`:''}</div><button onclick="cc(${i},1)">안부 묻기</button><button onclick="cc(${i},2)">계좌번호 물어보기</button><button onclick="cc(${i},3)">약속 잡기</button><button class=s onclick=call()>끊기</button></div>`)}
+function cc(i,k){const p=G.ppl[i];let t;if(k==1){p.rel=Math.min(100,p.rel+3);t=p.lv?P(LP):'"잘 지내지~ 너는?"'}if(k==2){p.ak=1;t='"응, 메시지로 보내줄게. "'+p.ac}if(k==3){p.rel=Math.min(100,p.rel+5);adj({hy:3});t='"좋아! 그날 보자!"'}cl(i,t)}
+function msg(){scr('plain',`<div class=ph><h3>💬 메시지</h3>${ctc().map(p=>{const t=G.th[p.id]||[],l=t[t.length-1];return `<div class=box onclick="th(${p.id})">${p.face} <b>${E(p.n)}</b><br><small>${l?E(l.t):'대화 없음'}</small></div>`}).join('')||'<p>연락처가 없어요.</p>'}${back}</div>`)}
+function th(i){const p=G.ppl[i],t=G.th[i]=G.th[i]||[];G.un=Math.max(0,G.un-t.filter(x=>!x.r&&!x.m).length);t.forEach(x=>x.r=1);scr('plain',`<div class=ph><h3>${p.face} ${E(p.n)}</h3><div class=box style="overflow:hidden;min-height:120px">${t.map(x=>`<div class="bub ${x.m?'me':'ot'}">${E(x.t)}</div>`).join('')}</div><input id=m placeholder="메시지 입력"><button onclick="sm(${i})">보내기</button><button class=s onclick=msg()>◀ 뒤로</button></div>`)}
+function sm(i){const v=$('#m').value.trim();if(!v)return;const p=G.ppl[i];G.th[i].push({m:1,t:v,r:1},{m:0,t:p.lv?P(LP):P(RP),r:1});p.rel=Math.min(100,p.rel+2);th(i)}
+function insta(){if(G.fa!=G.age){G.fa=G.age;G.feed=[];for(let i=0;i<5;i++){const p=R(2)&&G.ppl.length?P(G.ppl):0;G.feed.push({id:p?p.id:-1,n:p?p.n:nm(P(['남','여'])),f:p?p.face:'🙂',t:P(IT),l:R(400),li:0,cm:[],fo:p?p.fo:0})}}
+scr('plain',`<div class=ph><h3>📷 인스타그램</h3><div class=box>내 팔로워 ${G.fl}명 <button onclick=ip()>✏️ 게시물 올리기</button></div>${G.posts.slice(-3).reverse().map(x=>`<div class=box><b>나</b><br>${E(x.t)}<br>❤️${x.l} ${x.c.map(c=>'<br>💬 '+E(c)).join('')}</div>`).join('')}${G.feed.map((x,i)=>`<div class=box>${x.f} <b>${E(x.n)}</b> ${x.fb?'<small>(맞팔)</small>':''}<br>${E(x.t)}<br>❤️${x.l+x.li}<br>${x.cm.map(c=>'💬 '+E(c)+'<br>').join('')}<button style="width:32%" onclick="il(${i})">${x.li?'♥':'♡'}</button> <button style="width:32%" class=g onclick="ic(${i})">💬</button> <button style="width:32%" class=s onclick="ifo(${i})">${x.fo?'팔로잉':'팔로우'}</button></div>`).join('')}${back}</div>`)}
+const il=i=>{G.feed[i].li=G.feed[i].li?0:1;insta()},ic=i=>{const t=prompt('댓글을 입력하세요');if(t){G.feed[i].cm.push(t);const p=G.ppl[G.feed[i].id];if(p)p.rel=Math.min(100,p.rel+2)}insta()},
+ifo=i=>{const x=G.feed[i];x.fo=!x.fo;const p=G.ppl[x.id];if(p)p.fo=x.fo;if(x.fo&&(p?p.rel>35:R(2))&&R(10)<6){x.fb=1;G.fl++}insta()},
+ip=()=>{const t=prompt('어떤 내용을 올릴까요?');if(!t)return;const l=Math.floor(G.fl*(.2+Math.random()*.5)+G.lk/5+R(10));G.fl+=Math.floor(l/10);G.posts.push({t,l,c:Array.from({length:R(4)},()=>P(['멋져요!','부럽다 ㅠㅠ','ㅋㅋㅋ 대박','좋아요 눌렀어요']))});insta()};
+function alba(m){const ok=G.age>=16;scr('plain',`<div class=ph><h3>🍯 꿀알바</h3>${m?`<div class=box>${m}</div>`:''}<div class=box>현재: ${G.job?G.job[0]+' (시급 '+W(G.job[1])+')':'없음'} ${G.job?'<button class=s onclick=qt()>그만두기</button>':''}</div>${AL.map((j,i)=>`<div class=box>${j[0]} · 시급 ${W(j[1])} ${j[2]>16?'<small>(성인만)</small>':''}<button ${ok&&G.age>=j[2]?'':'disabled'} onclick=ap(${i})>지원하기</button></div>`).join('')}${back}</div>`)}
+const qt=()=>{G.job=0;alba('퇴사했어요.')},ap=i=>{if(Math.random()<.75){G.job=AL[i];alba('✅ 합격! 이제부터 일하면 매년 수입이 생겨요 (행동력 -1).')}else alba('😢 불합격...')};
+function stock(){let tot=0,h=S.map((s,i)=>{const q=G.hold[i]||0,d=((G.px[i]/G.pv[i]-1)*100).toFixed(1);tot+=q*G.px[i];return `<div class=box><b>${s[0]}</b> ${W(G.px[i])} <span class=${d>=0?'up':'dn'}>${d>=0?'▲':'▼'}${Math.abs(d)}%</span><br>보유 ${q}주<div class=row><button onclick=bs(${i},1)>+1</button><button onclick=bs(${i},10)>+10</button><button class=s onclick=bs(${i},-1)>-1</button><button class=s onclick=bs(${i},-999999)>전량</button></div></div>`}).join('');
+scr('plain',`<div class=ph><h3>📈 주식</h3><div class=box>예수금 ${W(G.cash)}<br>평가금액 ${W(tot)}<button class=g onclick="tick();stock()">⏩ 장 진행</button></div>${h}${back}</div>`)}
+function bs(i,n){const q=G.hold[i]||0;if(n>0){if(G.cash<G.px[i]*n)return alert('잔액이 부족해요.');G.cash-=G.px[i]*n;G.hold[i]=q+n}else{const s=Math.min(q,-n);G.cash+=s*G.px[i];G.hold[i]=q-s}stock()}
+function bank(m){scr('plain',`<div class=ph><h3>🏦 은행</h3>${m?`<div class=box>${m}</div>`:''}<div class=box>내 계좌 ${G.ac}<br>잔액 <b>${W(G.cash)}</b><br>저축 <b>${W(G.sav)}</b> (연 4%)</div><button onclick=sv(1)>저축하기</button><button class=g onclick=sv(0)>저축 찾기</button><button onclick=tr()>💸 송금하기</button>${back}</div>`)}
+function sv(d){const a=parseInt(prompt('금액(원)'));if(!(a>0))return bank();if(d){if(a>G.cash)return bank('잔액 부족');G.cash-=a;G.sav+=a}else{if(a>G.sav)return bank('저축액 부족');G.sav-=a;G.cash+=a}bank('완료!')}
+function tr(){const n=prompt('받는 분 계좌번호 (예: 110-123-456789)'),p=G.ppl.find(x=>x.ac==(n||'').trim());if(!p)return bank('❌ 존재하지 않는 계좌예요.');const a=parseInt(prompt(p.n+'님에게 보낼 금액'));if(!(a>0)||a>G.cash)return bank('금액이 올바르지 않거나 잔액이 부족해요.');G.cash-=a;p.rel=Math.min(100,p.rel+Math.min(15,Math.ceil(a/50000)));bank(`✅ ${p.n}님에게 ${W(a)} 송금 완료!`)}
+// ---- 엔딩
+function fin(){const g=G,tot=g.cash+g.sav+g.ppl.length*0+Object.keys(g.hold).reduce((s,i)=>s+g.hold[i]*g.px[i],0),lv=g.ppl.filter(p=>p.lv).length;
+scr('story',`<h1 style="color:#fff">🕊️ ${E(g.n)}의 인생</h1><p>${g.age}세, 평온하게 눈을 감았습니다.<br><br>💰 마지막 자산 ${W(tot)}<br>👥 인연 ${g.ppl.length}명 ${g.spouse?'<br>💍 결혼하여 가정을 이루었음':''} ${lv?'<br>❤️ 연인 '+lv+'명':''}<br>📷 인스타 팔로워 ${g.fl}명<br>😊 행복도 ${g.hy}</p><div class=card><button onclick=nameScr()>🔄 새로운 인생 시작</button></div>`);A.onclick=null}
+</script></body></html>
